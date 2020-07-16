@@ -13,7 +13,7 @@ void setup() {
 
   float f_target = 200; // target frequency Hz
   float f[] = {
-  (a - vo)/a*f_target,(a + vo)/a*f_target};
+  (a - vo)/a*f_target,(a + vo)/a*f_target}; // Array of Frequencies. This is gonna get replaced with the curve
   
  
   float delta_t = d/vo*1000; // delay milliseconds
@@ -28,7 +28,7 @@ void setup() {
   Serial.print("\n\n");  
   for (int i = 0; i < 2; i++) {
     tone(piezoPin,f[i],delta_t);
-    delay(delta_t);
+    delay(delta_t); // This loop will get replaced with the full curve
   }
  
   
