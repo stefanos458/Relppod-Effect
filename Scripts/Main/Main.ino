@@ -1,3 +1,7 @@
+
+//float rel_v[] = -vo*(d - t*vo)/sqrt(d-t*vo)^2 + D^2); // Relative velocity 
+//float f[] = (a + rel_v)/a*f_target; // Adjusted frequency based on relative velocity
+
 int piezoPin = 5;
 
 void setup() {
@@ -14,13 +18,16 @@ void setup() {
 
   float a = 343; // Speed of sound m/s
   float f_target = 200; // Target frequency Hz
+
+  float rel_v[1000];
+  float f[1000];
   
-  //for () {
-    float rel_v[] = -vo*(d - t*vo)/sqrt(d-t*vo)^2 + D^2); // Relative velocity 
-    float f[] = (a + rel_v)/a*f_target; // Adjusted frequency based on relative velocity
-  //}
-  
-  
+  for(int i=0; i < 1000; i++) {
+    rel_v[i] = ((-vo*(d - i*vo)/sqrt(d-i*vo))*(-vo*(d - i*vo)/sqrt(d-i*vo)) + D*D); // Relative velocity 
+    f[i] = (a + rel_v[i])/a*f_target; // Adjusted frequency based on relative velocity
+    Serial.print(rel_v[i]); 
+    Serial.print(f[i]); 
+  }
   
   
   float delta_t = d/vo*1000; // Delay milliseconds before source passes observer (Not useful rn i think)
@@ -34,6 +41,7 @@ void setup() {
   Serial.print("Time Before Trigger (ms): ");  
   Serial.print(delta_t);       
   Serial.print("\n\n");  
+  
   
  
   
