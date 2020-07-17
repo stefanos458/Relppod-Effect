@@ -1,22 +1,30 @@
-int piezoPin = 8;
+int piezoPin = 5;
 
 void setup() {
   Serial.begin(9600);
   // put your setup code here, to run once:
+  
+  // Initial Conditions For the Relppod Effect
   float vo = 100; // Velocity MPH
   vo = vo*0.44704; // Velocity m/s
-
   float d = 150; // run distance ft
-  d = d*0.3048; // run distance ft
+  d = d*0.3048; // run distance m
+  float D = 20; // Standoff Distance ft
+  D = D*0.3048; // Standoff Distance m
 
   float a = 343; // speed of sound m/s
-
   float f_target = 200; // target frequency Hz
-  float f[] = {
-  (a - vo)/a*f_target,(a + vo)/a*f_target}; // Array of Frequencies. This is gonna get replaced with the curve
   
- 
-  float delta_t = d/vo*1000; // delay milliseconds
+  //for () {
+    float rel_v[] = -vo*(d - t*vo)/sqrt(d-t*vo)^2 + D^2);
+    float f[] = (a + rel_v)/a*f_target;
+  //}
+  
+  
+  
+  
+  float delta_t = d/vo*1000; // delay milliseconds before source passes observer (Not useful rn i think)
+  
   Serial.print("First Frequency (Hz): ");  
   Serial.print(f[0]);       
   Serial.print("\n");  
@@ -26,10 +34,7 @@ void setup() {
   Serial.print("Time Before Trigger (ms): ");  
   Serial.print(delta_t);       
   Serial.print("\n\n");  
-  for (int i = 0; i < 2; i++) {
-    tone(piezoPin,f[i],delta_t);
-    delay(delta_t); // This loop will get replaced with the full curve
-  }
+  
  
   
 }
