@@ -26,8 +26,10 @@ void setup() {
     float t = float(i);
     rel_v[i] = ((-vo*(d - t*vo)/sqrt(d-t*vo))*(-vo*(d - t*vo)/sqrt(d-i*vo)) + D*D); // Relative velocity 
     f[i] = (a + rel_v[i])/a*f_target; // Adjusted frequency based on relative velocity
-    Serial.print(rel_v[i]); 
+    Serial.print(rel_v[i]);
+    Serial.print("\n");
     Serial.print(f[i]); 
+    Serial.print("\n");
   }
   
   
