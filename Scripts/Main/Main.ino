@@ -17,33 +17,29 @@ void setup() {
   D = D*0.3048; // Standoff Distance m
 
   float a = 343; // Speed of sound m/s
-  float f_target = 200; // Target frequency Hz
+  float f_target = 300; // Target frequency Hz
 
-  float rel_v[1000];
-  float f[1000];
   
-  for(int i=0; i < 1000; i++) {
-    float t = float(i);
+
+  float runtime = 2.5; 
+  float rel_v[250];
+  float f[250];
+  
+ for(int i=0; i < 250; i++) {
+    float t = float(i)*.01;
     rel_v[i] = vo*(d - t*vo)/sqrt(pow(d-t*vo,2)+ pow(D,2));// Relative velocity 
-    f[i] = (a + rel_v[i])/a*f_target; // Adjusted frequency based on relative velocity
-    Serial.print(rel_v[i]);
-    Serial.print("\n");
+    f[i] = (a - rel_v[i])/a*f_target; // Adjusted frequency based on relative velocity
     Serial.print(f[i]); 
     Serial.print("\n");
   }
-  
-  
+
+for (int i = 0; i < 250; i++) {
+  tone(piezoPin,f[i],10);
+  delay(10);
+  }
   float delta_t = d/vo*1000; // Delay milliseconds before source passes observer (Not useful rn i think)
   
-  Serial.print("First Frequency (Hz): ");  
-  Serial.print(f[0]);       
-  Serial.print("\n");  
-  Serial.print("Second Frequency (Hz): ");  
-  Serial.print(f[1]);       
-  Serial.print("\n");  
-  Serial.print("Time Before Trigger (ms): ");  
-  Serial.print(delta_t);       
-  Serial.print("\n\n");  
+  
   
   
  
