@@ -38,12 +38,6 @@ for (int i = 0; i < 250; i++) {
   delay(10);
   }
   float delta_t = d/vo*1000; // Delay milliseconds before source passes observer (Not useful rn i think)
-  
-  
-  
-  
- 
-  
 }
 
 void loop() {

@@ -12,34 +12,117 @@
     </head>
     <body>
     	<p>hello</p>
+    	<!-- pitch shift -->
     	<div>
 		  <input type="range" id="pitch" name="pitch"
 		         min="0" max="600">
 		  <label for="pitch">pitch</label>
 		  <p>val: <span id="val"></span></p>
 		</div>
+
+		<div style="padding-bottom: 10px">
+			<!-- vel -->
+			<label for="velocity">velocity</label>
+			<input type="text" id="velocity" name="velocity" >
+			<br>
+		</div>
+
+		<div style="padding-bottom: 10px">
+			<!-- run dist -->
+			<label for="rund">run distance</label>
+			<input type="text" id="rund" name="rund">
+			<br>
+		</div>
+
+		<div style="padding-bottom: 10px">
+			<!-- standoff dist -->
+			<label for="standd">standoff distance</label>
+			<input type="text" id="standd" name="standd">
+
+		</div>
+
+		<!-- start stop -->
+		<div>
+			<input type="button" name="start" value="start" id="start" onclick="osc()">
+			<button type="button" id="stop" onclick="oscillator.stop();">stop</button>
+		</div>
         
     </body>
-    <script src="beep.js" async defer></script>
+
     <script>
     	// create web audio api context
 		var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 		// create Oscillator node
 		var oscillator = audioCtx.createOscillator();
-		var gainNode = audioCtx.createGain();
-		oscillator.type = 'square';
 
 		var slider = document.getElementById("pitch");
+		var vel = document.getElementById("velocity");
+		var rund = document.getElementById("rund");
+		var standd = document.getElementById("standd");
+		var stop = document.getElementById("stop");
 		var output = document.getElementById("val");
 		output.innerHTML = slider.value;
-		oscillator.frequency.setValueAtTime(0, audioCtx.currentTime);
-		oscillator.connect(audioCtx.destination);
 		
+		// timer for async
+		const timer = ms => new Promise(res => setTimeout(res, ms))
+
+		// frequencies
+		var f = [250];
+		var d = 150; // run distance ft
+		var D = 20; // Standoff Distance ft
+		var vo = 100; // Velocity MPH
+
+		// oscliate based on slider
 		slider.oninput = function() {
 		  	output.innerHTML = this.value;
 		  	oscillator.frequency.setValueAtTime(this.value, audioCtx.currentTime); // value in hertz
 			oscillator.start();
 		}
+
+		// compute the reverse doppler
+		async function osc(){
+			var a = 343; // Speed of sound m/s
+			var f_target = 300; // Target frequency Hz
+
+			var runtime = 2.5; 
+			var rel_v = [250];
+
+			for(var i=0; i < 250; i++) {
+				var t = i*.01;
+				rel_v[i] = vo*(d - t*vo)/Math.sqrt(Math.pow(d-t*vo,2)+ Math.pow(D,2));// Relative velocity 
+				f[i] = (a - rel_v[i])/a*f_target; // Adjusted frequency based on relative velocity
+			}
+
+			oscillator = audioCtx.createOscillator();
+			oscillator.type = 'square';
+			oscillator.frequency.setValueAtTime(0, audioCtx.currentTime);
+			oscillator.connect(audioCtx.destination);
+			oscillator.start();
+			for (var i = 0; i < 250; i++) {
+				// console.log(f[i]); 
+				// console.log("\n");
+				oscillator.frequency.setValueAtTime(f[i], audioCtx.currentTime); // value in hertz
+				
+				await timer(10);
+			}
+			console.log("ran \n");
+		}
+
+		vel.oninput = function(){
+			vo = this.value; // Velocity MPH
+			vo = vo*0.44704; // Velocity m/s
+		}
+
+		rund.oninput = function(){
+			d = this.value;
+			d = d*0.3048; // run distance m
+		}
+
+		standd.oninput = function(){
+			D = this.value;
+			D = D*0.3048; // Standoff Distance m
+		}
+
     </script>
 </html>
