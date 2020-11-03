@@ -1,0 +1,45 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>beep</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="icon.png">
+
+    </head>
+    <body>
+    	<p>hello</p>
+    	<div>
+		  <input type="range" id="pitch" name="pitch"
+		         min="0" max="600">
+		  <label for="pitch">pitch</label>
+		  <p>val: <span id="val"></span></p>
+		</div>
+        
+    </body>
+    <script src="beep.js" async defer></script>
+    <script>
+    	// create web audio api context
+		var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+		// create Oscillator node
+		var oscillator = audioCtx.createOscillator();
+		var gainNode = audioCtx.createGain();
+		oscillator.type = 'square';
+
+		var slider = document.getElementById("pitch");
+		var output = document.getElementById("val");
+		output.innerHTML = slider.value;
+		oscillator.frequency.setValueAtTime(0, audioCtx.currentTime);
+		oscillator.connect(audioCtx.destination);
+		
+		slider.oninput = function() {
+		  	output.innerHTML = this.value;
+		  	oscillator.frequency.setValueAtTime(this.value, audioCtx.currentTime); // value in hertz
+			oscillator.start();
+		}
+    </script>
+</html>
